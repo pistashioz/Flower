@@ -8,11 +8,11 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 const loader = new THREE.TextureLoader();
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-//scene.background = loader.load( 'assets/background.svg' );
+scene.background = loader.load( 'assets/background.svg' );
 
 
 // Add directional light
-/*
+
 const pointLight = new THREE.PointLight( 0xffffff, 10000)
 pointLight.position.x = 2
 pointLight.position.y =50;
@@ -26,7 +26,7 @@ const sunlight = new THREE.DirectionalLight(0xffffff);
 sunlight.position.x = -1
 sunlight.position.y = 2
 scene.add(sunlight)
-*/
+
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -70,6 +70,7 @@ centerFlower.castShadow = true;
 const flower = new THREE.Group
 flower.add(cylinder, petals, centerFlower)
 scene.add(flower)
+
 
 //fireflies
 
@@ -199,10 +200,8 @@ camera.position.z = 40;
 
 //cloud
 
-
-
-function animate() {
-	requestAnimationFrame( animate );
+function animateNightMode() {
+	requestAnimationFrame( animateNightMode );
 	
 	points.forEach(p => {
 		p.velocity -= 0.01 + Math.random() * 0.01
@@ -234,4 +233,30 @@ function animate() {
 	renderer.render( scene, camera );
 }
 
-animate();
+function animateLightMode() {
+	requestAnimationFrame( animateLightMode );
+	scene.remove(rain)
+	scene.remove(pLights)
+	
+	const zLimit = 0; // Set the desired limit along the z-axis
+
+	// Check and limit camera position
+	if (camera.position.y < zLimit) {
+		camera.position.y = zLimit;
+	}
+	controls.update();
+
+	renderer.render( scene, camera );
+}
+
+function startDarkMode(){
+	scene.background = loader.load( 'assets/darkMode.png' );
+	animateNightMode()
+}
+
+function startLightMode(){
+	scene.background = loader.load( 'assets/background.svg' );
+	animateLightMode()
+}
+const btn = document.getElementById('img')
+btn.addEventListener('click', startLightMode)

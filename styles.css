@@ -1,0 +1,17 @@
+button{
+    background: transparent;
+    width: 150px;
+    height: 100%;
+    border: none;
+    cursor: pointer;
+}
+#img{
+    background: transparent;
+    width: 50%;
+}
+#container{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+}
