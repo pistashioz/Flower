@@ -8,11 +8,11 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 const loader = new THREE.TextureLoader();
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-scene.background = loader.load( 'assets/background.svg' );
+scene.background = loader.load( 'assets/darkMode.png' );
 
 
 // Add directional light
-
+/*
 const pointLight = new THREE.PointLight( 0xffffff, 10000)
 pointLight.position.x = 2
 pointLight.position.y =50;
@@ -26,7 +26,7 @@ const sunlight = new THREE.DirectionalLight(0xffffff);
 sunlight.position.x = -1
 sunlight.position.y = 2
 scene.add(sunlight)
-
+*/
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -78,14 +78,14 @@ function getPointLight(color){
 	const light = new THREE.PointLight(color, 100, 500);
 
 	
-	const geo = new THREE.IcosahedronGeometry(0.3, 0);
+	const geo = new THREE.IcosahedronGeometry(0.2, 0);
 	const mat = new THREE.MeshBasicMaterial({color})
 	const mesh = new THREE.Mesh(geo, mat)
 
 	const glowMat = new THREE.MeshBasicMaterial({
 		color,
 		transparent: true,
-		opacity: 0.20
+		opacity: 0.15
 	})
 	const glowMesh = new THREE.Mesh(geo, glowMat);
 	glowMesh.scale.multiplyScalar(1.5);
@@ -103,13 +103,13 @@ function getPointLight(color){
 	mesh.add(glowMesh4)
 
 	const circle = new THREE.Object3D()
-	circle.position.y = 8
-	const radius = 10
+	circle.position.y = 10
+	const radius = 13
 	mesh.position.x = radius 
 	circle.rotation.x = THREE.MathUtils.degToRad(120)
-	circle.rotation.y = Math.random() * Math.PI * 2
+	circle.rotation.y = Math.random() * Math.PI * 8
 	circle.add(mesh)
-	const rate = Math.random() * 0.002 + 0.005
+	const rate = Math.random() * 0.001 + 0.003
 	function update(){
 		circle.rotation.z += rate
 	}
@@ -118,7 +118,7 @@ function getPointLight(color){
 		update,
 	}
 }
-const colors = [0xbc00dd, 0xff006d, 0x04e762, 0xffdd00]
+const colors = [0xbc00dd, 0xff006d, 0x04e762, 0xffdd00, 0x17ffee]
 const pLights = []
 let pLight;
 for (let i = 0; i < colors.length; i++){
@@ -126,6 +126,8 @@ for (let i = 0; i < colors.length; i++){
 	scene.add(pLight.obj)
 	pLights.push(pLight)
 }
+
+//thunder
 
 //rain
 
@@ -198,6 +200,9 @@ let axesCylinder = new THREE.AxesHelper(2);
 cylinder.add(axesCylinder)
 camera.position.z = 40;
 
+
+
+
 //cloud
 
 function animateNightMode() {
@@ -221,6 +226,7 @@ function animateNightMode() {
 
 	rainGeo.attributes.position.needsUpdate = true;
 	pLights.forEach(l => l.update())
+ 
 	camera.position.z += 0.1; // Adjust the camera movement speed as needed
 	const zLimit = 0; // Set the desired limit along the z-axis
 
@@ -232,7 +238,8 @@ function animateNightMode() {
 
 	renderer.render( scene, camera );
 }
-
+animateNightMode();
+/*
 function animateLightMode() {
 	requestAnimationFrame( animateLightMode );
 	scene.remove(rain)
@@ -260,3 +267,4 @@ function startLightMode(){
 }
 const btn = document.getElementById('img')
 btn.addEventListener('click', startLightMode)
+*/
