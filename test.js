@@ -19,7 +19,6 @@ pointLight.position.x = 2
 pointLight.position.y =50;
 pointLight.position.z= 4.4;
 
-const pointLightHelper = new THREE.PointLightHelper( pointLight );
 const sunlight = new THREE.DirectionalLight(0xffffff);
 sunlight.position.x = -1
 sunlight.position.y = 2
@@ -33,13 +32,32 @@ controls.maxDistance = 25
 controls.minDistance = 20
 //materials 
 
-const flowerStemColor = new THREE.MeshLambertMaterial( {color: 0x9CC5A1, flatShading: true} );
-const bigPetalsColor = new THREE.MeshLambertMaterial( {color: 0xe63946, flatShading: true} );
-const smallPetalsColor = new THREE.MeshLambertMaterial( {color: 0xffb703, flatShading: true} );
+const flowerStemColor = new THREE.MeshLambertMaterial( {color: 0x0c9200, flatShading: true} );
+const bigPetalsColor = new THREE.MeshLambertMaterial( {color: 0xffdb02, flatShading: true} );
+const smallPetalsColor = new THREE.MeshLambertMaterial( {color: 0xff8607, flatShading: true} );
+//pivots
+let pivot1, pivot2, pivot3, pivot4
+let growFlower = false
+pivot1 = new THREE.Object3D();
+pivot1.position.set(-2, 0, 0)
+scene.add(pivot1)
+
+pivot2 = new THREE.Object3D()
+pivot2.position.set(-2, 0, 0)
+scene.add(pivot2)
+
+pivot3 = new THREE.Object3D()
+pivot3.position.set(-2, 0, 0)
+scene.add(pivot3)
+
+pivot4 = new THREE.Object3D()
+pivot4.position.set(-2, 0, 0)
+scene.add(pivot4)
 //flower
 const geometry = new THREE.CylinderGeometry(0.03, 0.5, 20, 20); 
 const cylinder = new THREE.Mesh( geometry, flowerStemColor ); 
-
+cylinder.position.set(0, 0, 0)
+pivot1.add(cylinder)
 
 //Big petal
 const bigPetals = new THREE.IcosahedronGeometry(4, 0);
@@ -50,6 +68,9 @@ petals.rotation.x = -0.2;
 petals.rotation.y = 4.8;
 petals.position.set(cylinder.position.x, 10, cylinder.position.z);
 petals.castShadow = true;
+pivot2.add(petals)
+
+
 
 
 //Small petal
@@ -61,12 +82,25 @@ centerFlower.rotation.x = -0.2;
 centerFlower.rotation.y = 4.8;
 centerFlower.position.set(petals.position.x, 10.5, petals.position.z + 1.5);
 centerFlower.castShadow = true;
+pivot3.add(centerFlower)
+
+const axesHelper1 = new THREE.AxesHelper(3);
+pivot1.add(axesHelper1);
+
+const axesHelper2 = new THREE.AxesHelper(3);
+pivot2.add(axesHelper2);
+
+const axesHelper3 = new THREE.AxesHelper(3);
+pivot2.add(axesHelper3);
 
 //group flower elements
 
 const flower = new THREE.Group
 flower.add(cylinder, petals, centerFlower)
-scene.add(flower)
+pivot4.add(flower)
+
+
+
 
 //fireflies
 
@@ -124,7 +158,7 @@ for (let i = 0; i < colors.length; i++){
 	pLights.push(pLight)
 }
 
-//thunder
+
 
 //rain
 
@@ -199,9 +233,20 @@ camera.position.z = 40;
 
 
 
-
+//cloud
 
 function animateNightMode() {
+
+    if (growFlower) pivot4.rotation.y += 0.01
+        renderer.render(scene,camera)
+        controls.update()
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key == "s")
+        console.log('aaaa')
+       growFlower = true
+    })
+    
 	requestAnimationFrame( animateNightMode );
 	
 	points.forEach(p => {
@@ -230,45 +275,6 @@ function animateNightMode() {
 	if (camera.position.y < zLimit) {
 		camera.position.y = zLimit;
 	}
-	controls.update();
-
-	renderer.render( scene, camera );
 }
 animateNightMode();
 
-function animateLightMode() {
-	requestAnimationFrame( animateLightMode );
-	scene.remove(rain)
-
-	scene.add(pointLight)
-	
-	scene.add( pointLightHelper );
-
-
-
-	scene.add(sunlight)
-	pLights = []
-	
-	const zLimit = 0; // Set the desired limit along the z-axis
-
-	// Check and limit camera position
-	if (camera.position.y < zLimit) {
-		camera.position.y = zLimit;
-	}
-	controls.update();
-
-	renderer.render( scene, camera );
-
-}
-
-function startDarkMode(){
-	scene.background = loader.load( 'assets/darkMode.png' );
-	animateNightMode()
-}
-
-function startLightMode(){
-	scene.background = loader.load( 'assets/background.svg' );
-	animateLightMode()
-}
-const btn = document.getElementById('img')
-btn.addEventListener('click', startLightMode)
